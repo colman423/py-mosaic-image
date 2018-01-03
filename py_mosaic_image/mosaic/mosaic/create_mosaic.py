@@ -1,11 +1,20 @@
 # coding=utf-8
-from utility import *
 from PIL import Image
-import create_tiles
 
-def load(filename, grid):
-    img = Image.open(filename).convert('YCbCr')
+import create_tiles
+from utility import *
+from io import BytesIO
+import base64
+import cStringIO
+
+progress = 0
+
+def load(img, grid):
+    global progress
+    progress = 0
+
     pixel = img.load()
+    print "pixel"
     width, height = img.size
     blockW, blockH = width/grid, height/grid
 
@@ -20,10 +29,19 @@ def load(filename, grid):
     colorDis = [-1]*(grid*grid)
     tiles = [None]*(grid*grid)
 
+    try:
+        print os.listdir(DATAPATH)
+    except:
+        print "Unexpected error:", sys.exc_info()[0]
+        raise
+
+
     for filename in os.listdir(DATAPATH):
         if(isData(filename)):
             print filename
             with open(DATAPATH + filename) as f:
+                progress += 0.08
+                print progress
                 compareData = [item.split(' ') for item in f.read().splitlines()]
                 f.close()
                 compareYArr = [float(i[0]) for i in compareData]
@@ -44,6 +62,7 @@ def load(filename, grid):
                         tiles[i] = filename[:-3]
 
     for i in xrange(grid*grid):
+        progress += 1
         tile = tiles[i]
         print "tiles[{0}] = {1}".format(i, tile)
         block = Image.open(DATAPATH + tile).convert('YCbCr')
@@ -52,7 +71,22 @@ def load(filename, grid):
 
     img.save(DATAPATH + "..\\abc.jpg")
 
+    buffer = cStringIO.StringIO()
+    img.save(buffer, format="JPEG")
+    progress = base64.b64encode(buffer.getvalue())
+
+def create(file, grid):
+    print "create"
+    data = {}
+    data['img'] = file
+    print "data"
+    img = Image.open(BytesIO(base64.b64decode(data['img']))).convert('YCbCr')
+    print "image"
+    load(img, grid)
+
 
 if __name__ == "__main__":
     create_tiles.do()
-    load(DATAPATH + "..\\test.png", 80)
+    # img = Image.open(DATAPATH + "..\\test.png").convert('YCbCr')
+    # load(img, 80)
+

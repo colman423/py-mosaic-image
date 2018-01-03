@@ -23,47 +23,84 @@
                 <input id="file" class="" type="file" name="file">
             </div>
             <div class="row form-group">
+                <img id="prev" class="image">
+                <p id="base64" class="hidden" hidden></p>
+            </div>
+            <div class="row form-group">
                 <input id="submit" type="button" class="btn btn-primary" value="進入網站">
             </div>
         </div>
         <p id="result"></p>
-        {% load staticfiles %}
-        {% load socketio_tags %}
-        {% socketio %}
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script type="text/javascript">
             $(function() {
-                var socket = new io.Socket();
-                socket.connect();
-                socket.on('connect', function() {
-                    console.log("con!");
-                    socket.subscribe('notification');
-                })
-                socket.on('message',countNewMessage);
-                socket.send({'id': 1});
+                $('#file').on('change', function() {
+                    if (this.files && this.files[0]) {
 
-                var countNewMessage = function(data) {
-                    console.log(data.id);
-                };
+                        var FR = new FileReader();
+                        FR.addEventListener("load", function(e) {
+                            let code = e.target.result;
+                            $('#prev').attr('src', code);
+                            $('#base64').text(code);
+                        });
+
+                        FR.readAsDataURL( this.files[0] );
+                    }
+                });
                 $('#submit').on('click', function() {
                     console.log("submit click!");
+                    file = $('#base64').text();
+                    if(!file) {
+                        alert('no image');
+                        return;
+                    }
+                    let imgData = file.substr(file.indexOf('base64,')+7);
+                    console.log(imgData);
                     $.ajax({
-                        'type': "POST",
-                        'url': "/",
-                        'data': {
-                            'file': $('#file').val()
+                        type: "POST",
+                        url: "/",
+                        data: {
+                            'file': imgData
                         },
-                        'success': function(res) {
-                            console.log(res);
-                            if( res ) {
-                                console.log("image");
-                            }
-                            else {
-                            }
-
+                        success: function(res) {
+                            $('#result').text("start");
+                            alert("success");
+                            startSocket();
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            alert("Status: " + textStatus); alert("Error: " + errorThrown);
                         }
                     });
                 });
+                function startSocket() {
+                    let timer = setInterval(function() {
+                        $.ajax({
+                            type: "POST",
+                            url: "/",
+                            data: {
+                                'wait': true
+                            },
+                            success: function(res) {
+                                console.log(res);
+                                if( res.startsWith("progress:") ){
+                                    console.log("pro");
+                                    $('#result').text(res);
+                                }
+                                else {
+                                    console.log("clear");
+                                    $('#prev').attr('src', res);
+                                    clearInterval(timer);
+                                    $('#result').text("FINAL");
+                                }
+
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                console.log("Status: " + textStatus);
+                                console.log("Error: " + errorThrown);
+                            }
+                        });
+                    }, 1000);
+                }
             });
         </script>
     </body>

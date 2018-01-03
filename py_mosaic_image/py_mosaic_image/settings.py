@@ -39,13 +39,12 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mosaic',
-    'django_socketio',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -112,24 +111,3 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
-
-SOCKETIO_HOST = 'localhost'
-SOCKETIO_PORT = 9000
-
-
-#
-# from django_socketio.events import on_connect
-# from django_socketio.events import on_message
-#
-# @on_connect
-# def connect(message):
-#     print "FUCK"
-#
-# @on_message
-# def connect(message):
-#     print "connn"
-#     raise ValueError()
-# def notification(request, socket, context, message):
-#     print "NONONO"
-#     socket.broadcast_channel({'id': message['id']})
-# # Create your views here.
