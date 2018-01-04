@@ -52,7 +52,7 @@ def doColorLayout(pixel, width, height, xStart=0, yStart=0):
             median = len(countArr)/2
             colIndex = np.argsort(countArr)[median]
             mosaicArr.append(colArr[colIndex])
-    mosaicArr = convertZigzac(mosaicArr)
+    # mosaicArr = convertZigzac(mosaicArr)
     dctResult = scipy.fftpack.dct(mosaicArr)
 
-    return dctResult
+    return convertZigzac(dctResult)

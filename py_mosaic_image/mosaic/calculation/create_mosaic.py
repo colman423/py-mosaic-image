@@ -98,6 +98,7 @@ def load(img, grid):
     # progress = response  # and we're done!
 
 def create(file, grid):
+    create_tiles.do()
     print "create"
     img = Image.open(BytesIO(base64.b64decode(file))).convert('YCbCr')
     print "image"
@@ -108,4 +109,3 @@ if __name__ == "__main__":
     create_tiles.do()
     # img = Image.open(DATAPATH + "..\\test.png").convert('YCbCr')
     # load(img, 80)
-
