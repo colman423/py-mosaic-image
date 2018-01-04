@@ -2,8 +2,9 @@
 # mosaic/views.py
 from django.shortcuts import render
 from django.http import HttpResponse
-import mosaic.create_mosaic
+from calculation.create_mosaic import create, progress
 from threading import Thread
+import os
 
 class createMosaic(Thread):
     def __init__(self, file, grid):
@@ -11,30 +12,51 @@ class createMosaic(Thread):
         self.file = file
         self.grid = grid
     def run(self):
-        mosaic.create_mosaic.create(self.file, self.grid)
+        create(self.file, self.grid)
+
+
+def mosaicPost(req):
+    res = HttpResponse()
+    if 'file' in req.POST:
+        print "has file"
+        file = req.POST['file']
+        grid = req.POST['grid']
+        createMosaic(file, int(grid)).start()
+        res.write(progress)
+        return res
+
+    elif 'wait' in req.POST:
+        res.write(progress)
+        return res
+
+        # progress = mosaic.create_mosaic.progress
+        # print "progress", progress
+        # try:
+        #     flt = float(progress)
+        #     res.write("progress:" + str(flt))
+        #     res['attr'] = "val"
+        #     return res
+        #
+        # except ValueError:
+        #     try:
+        #         with open(progress, "rb") as f:
+        #             data = f.read()
+        #             with open(os.getcwd() + "\\trytry.jpg", "w+") as ff:
+        #                 ff.write(data)
+        #             return HttpResponse(data, content_type="image/jpeg")
+        #     except IOError:
+        #         return HttpResponse("NONONO")
+
+                # return progress
+
+def mosaicGet(req):
+    return render(req, 'templates\\mosaic.html')
+
 
 def mosaicReq(req):
-    FILE = 'file'
-    WAIT = 'wait'
     print req
-    print mosaic.create_mosaic.progress
-    if FILE in req.POST:
-        print "has file"
-        file = req.POST[FILE]
-        createMosaic(file, 10).start()
-        print "thread over"
-        print "thread over"
-        print "thread over"
-        progress = 0
-        return HttpResponse("START")
-    elif WAIT in req.POST:
-        progress = mosaic.create_mosaic.progress
-        print "progress", progress
-        try:
-            flt = float(progress)
-            return HttpResponse("progress:"+str(flt))
-        except ValueError:
-            return HttpResponse(progress)
+    print progress
+    if req.method=="POST":
+        return mosaicPost(req)
     else:
-        print "no file"
-        return render(req, 'mosaic.html')
+        return mosaicGet(req)

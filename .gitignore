@@ -103,5 +103,7 @@ ENV/
 # PyCharm
 .idea/
 
-# ppt
+# ignore
 PPT/
+py_mosaic_image/public/output/
+py_mosaic_image/public/input/
