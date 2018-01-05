@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/main.css" rel="stylesheet">
+        <link href="/css/jquery-ui.min.css" rel="stylesheet">
+        <title>Mosaic Image</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="form-group">
+                <p class="text-center font-weight-bold">點擊下方框框以上傳圖片</p>
+                <img id="prev">
+                <input id="file" type="file" name="file" accept="image/*" hidden>
+                <p id="base64" hidden></p>
+            </div>
+            <div class="form-group">
+                <div class="row" id="select">
+                    <input id="grid" type="number" class="form-control col-3" placeholder="格線數量，預設為10">
+                    <input id="submit" type="button" class="btn btn-primary" value="轉換馬賽克">
+                    <div id="no-img-err" class="pull-right" style="display: none;">
+                        <p>請先選擇圖片</p>
+                    </div>
+                </div>
+                <div id="show" style="display: none;">
+                    <p id="progress-text" class="text-center">nownownow</p>
+                    <div id="progress-bar"></div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <img id="output" src="" hidden/>
+            </div>
+        </div>
+        <script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="/js/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="/js/main.js"></script>
+    </body>
+</html>
