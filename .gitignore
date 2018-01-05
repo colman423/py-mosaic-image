@@ -105,5 +105,5 @@ ENV/
 
 # ignore
 PPT/
-py_mosaic_image/public/output/
-py_mosaic_image/public/input/
+public/output/
+public/input/
