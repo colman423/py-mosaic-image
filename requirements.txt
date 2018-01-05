@@ -11,6 +11,7 @@ gevent==1.2.2
 gevent-socketio==0.2.1
 gevent-websocket==0.10.1
 greenlet==0.4.12
+gunicorn==19.7.1
 hyperlink==17.3.1
 incremental==17.5.0
 matplotlib==2.1.0
