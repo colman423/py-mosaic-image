@@ -1,3 +1,6 @@
+# tmp ignore
+dataset/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -103,5 +106,7 @@ ENV/
 # PyCharm
 .idea/
 
-# ppt
+# ignore
 PPT/
+py-mosaic-image/public/output/
+py-mosaic-image/public/input/
