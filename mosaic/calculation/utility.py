@@ -4,7 +4,7 @@ import scipy.fftpack
 import numpy as np
 
 MULTIPLE = 3
-DATAPATH = os.getcwd() + "\\dataset\\"
+DATAPATH = os.getcwd() + "/dataset/"
 
 def isImage(f):
     return f.endswith('.jpg') or f.endswith('.png') or f.endswith('.bmp') or f.endswith('.gif')

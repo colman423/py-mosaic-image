@@ -21,7 +21,7 @@ def load(img, grid):
     progress['state'] = 0
     progress['content'] = 0
     imgName = str(int(time.time()))
-    img.save(DATAPATH + "..\\public\\input\\"+imgName+".jpg")
+    img.save(DATAPATH + "../public/input/"+imgName+".jpg")
     pixel = img.load()
     print "pixel"
     width, height = img.size
@@ -86,7 +86,7 @@ def load(img, grid):
         img.paste(block, (blockW*(i%grid), blockH*(i/grid)))
         progress['content'] = 100*i/(grid*grid)
 
-    img.save(DATAPATH + "..\\public\\output\\"+imgName+".jpg")
+    img.save(DATAPATH + "../public/output/"+imgName+".jpg")
 
     # ===== complete =====
     progress['state'] += 1
