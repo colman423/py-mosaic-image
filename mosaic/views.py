@@ -50,7 +50,7 @@ def mosaicPost(req):
                 # return progress
 
 def mosaicGet(req):
-    return render(req, 'templates\\mosaic.html')
+    return render(req, 'templates/mosaic.html')
 
 
 def mosaicReq(req):

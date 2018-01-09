@@ -25,7 +25,7 @@ SECRET_KEY = '=+(pf^9&hd%zhvvm#yyu+fjg(7)%gpvf*aaflbtg!bwcc)!i2$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['py-mosaic-image2.herokuapp.com']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
