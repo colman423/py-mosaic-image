@@ -33,19 +33,26 @@ def mosaicPost(req):
         return res
 
     elif 'uid' in req.POST:
+
+        print "count of list = "+str(len(procedureList)) #tmp
         print "request progress"
         uid = req.POST['uid']
         print "request uid = "+uid
+
+        print "count of list = "+str(len(procedureList)) #tmp
         creating = findProcedure(uid)
         if creating==None:
             print "ERR! creating==None"
 
         progress = creating.getProgress()
 
+        print "count of list = "+str(len(procedureList)) #tmp
         print "procedure #"+uid+", progress: "+str(progress)
+        print "count of list = "+str(len(procedureList)) #tmp
         res.write(str(progress))
 
         if progress['state']==4:
+            print "delete procedure"
             procedureList.remove(creating)
             del creating
 
