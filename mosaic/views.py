@@ -6,7 +6,9 @@ from calculation.create_mosaic import *
 
 procedureList = []
 def findProcedure(uid):
+    print "finding..."
     for p in procedureList:
+        print "compare="+p.getUid()+", my="+uid
         if p.sameUid(uid):
             return p
     return None
