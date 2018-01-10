@@ -12,7 +12,6 @@ $(function() {
                 $('#prev').attr('src', code);
                 $('#base64').text(code);
             });
-
             FR.readAsDataURL( this.files[0] );
         }
     });
@@ -34,7 +33,7 @@ $(function() {
                 url: "/",
                 data: { 'file': imgData, 'grid': grid ? grid : 10},
                 success: function(res) {
-                    startSocket();
+                    responseProgress(res);
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown) {
                     console.log("submit click err");
@@ -44,51 +43,52 @@ $(function() {
             });
         }
     });
-    function startSocket() {
-        let timer = setInterval(function() {
-            $.ajax({
-                type: "POST",
-                url: "/",
-                data: { 'wait': true },
-                success: function(res) {
-                    res = JSON.parse(res.replace(/'/g, "\""));
-                    console.log(res);
-                    let state = res['state'];
-                    let content = res['content']
-                    if( res['state']==4 ) {
-                        clearInterval(timer);
-                        let url = '/output/'+content;
-                        $('#output').attr('src', url).prop('hidden', false);
+    function responseProgress(uid) {
+        console.log("my uid = "+uid);
+        $.ajax({
+            type: "POST",
+            url: "/",
+            data: { 'uid': uid },
+            success: function(res) {
+                res = JSON.parse(res.replace(/'/g, "\""));
+                console.log(res);
+                let state = res['state'];
+                let content = res['content']
+                if( res['state']==4 ) {
+                    let url = '/output/'+content;
+                    $('#output').attr('src', url).prop('hidden', false);
 
-                        $('#progress-text').text("complete!");
-                        $('#progress-bar').progressbar("value", 100);
+                    $('#progress-text').text("complete!");
+                    $('#progress-bar').progressbar("value", 100);
 
-                        $('html,body').animate({
-                            scrollTop: $("#output").offset().top
-                        },
-                        'slow');
+                    $('html,body').animate({
+                        scrollTop: $("#output").offset().top
+                    },
+                    'slow');
 
-                        $('#file').prop('disabled', false);
-                    }
-                    else {
-                        let text = "";
-                        if( state==0 ) text="loading image";
-                        else if( state==1 ) text="cutting image";
-                        else if( state==2 ) text="finding tiles";
-                        else if( state==3 ) text="assembling new image";
-                        else text="Oops! error here QAQ";
-
-                        $('#progress-text').text(text);
-                        $('#progress-bar').progressbar("value", content);
-                    }
-
-                },
-                error: function(XMLHttpRequest, textStatus, errorThrown) {
-                    console.log("Status: " + textStatus);
-                    console.log("Error: " + errorThrown);
+                    $('#file').prop('disabled', false);
                 }
-            });
-        }, 1000);
+                else {
+                    let text = "";
+                    if( state==0 ) text="loading image";
+                    else if( state==1 ) text="cutting image";
+                    else if( state==2 ) text="finding tiles";
+                    else if( state==3 ) text="assembling new image";
+                    else text="Oops! error here QAQ";
+
+                    $('#progress-text').text(text);
+                    $('#progress-bar').progressbar("value", content);
+                    setTimeout(function() {
+                        responseProgress(uid);
+                    }, 1000);
+                }
+
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+                console.log("Error: " + errorThrown);
+            }
+        });
     }
 
     $('#progress-bar').progressbar({

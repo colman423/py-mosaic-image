@@ -2,18 +2,14 @@
 # mosaic/views.py
 from django.shortcuts import render
 from django.http import HttpResponse
-from calculation.create_mosaic import create, progress
-from threading import Thread
-import os
+from calculation.create_mosaic import *
 
-class createMosaic(Thread):
-    def __init__(self, file, grid):
-        super(createMosaic, self).__init__()
-        self.file = file
-        self.grid = grid
-    def run(self):
-        create(self.file, self.grid)
-
+procedureList = []
+def findProcedure(uid):
+    for p in procedureList:
+        if p.sameUid(uid):
+            return p
+    return None
 
 def mosaicPost(req):
     res = HttpResponse()
@@ -21,33 +17,34 @@ def mosaicPost(req):
         print "has file"
         file = req.POST['file']
         grid = req.POST['grid']
-        createMosaic(file, int(grid)).start()
-        res.write(progress)
+
+        newProcedure = createMosaic(file, int(grid))
+        newProcedure.start()
+        procedureList.append(newProcedure)
+
+        uid = newProcedure.getUid()
+        print "new procedure! uid = ", uid
+        res.write(uid)
         return res
 
-    elif 'wait' in req.POST:
-        res.write(progress)
+    elif 'uid' in req.POST:
+        print "request progress"
+        uid = req.POST['uid']
+        creating = findProcedure(uid)
+        if creating==None:
+            print "ERR! creating==None"
+
+        progress = creating.getProgress()
+
+        print "procedure #"+uid+", progress: "+str(progress)
+        res.write(str(progress))
+
+        if progress['state']==4:
+            procedureList.remove(creating)
+            del creating
+
         return res
 
-        # progress = mosaic.create_mosaic.progress
-        # print "progress", progress
-        # try:
-        #     flt = float(progress)
-        #     res.write("progress:" + str(flt))
-        #     res['attr'] = "val"
-        #     return res
-        #
-        # except ValueError:
-        #     try:
-        #         with open(progress, "rb") as f:
-        #             data = f.read()
-        #             with open(os.getcwd() + "\\trytry.jpg", "w+") as ff:
-        #                 ff.write(data)
-        #             return HttpResponse(data, content_type="image/jpeg")
-        #     except IOError:
-        #         return HttpResponse("NONONO")
-
-                # return progress
 
 def mosaicGet(req):
     return render(req, 'templates/mosaic.html')
@@ -55,7 +52,6 @@ def mosaicGet(req):
 
 def mosaicReq(req):
     print req
-    print progress
     if req.method=="POST":
         return mosaicPost(req)
     else:
