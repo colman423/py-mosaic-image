@@ -18,6 +18,7 @@ def mosaicPost(req):
         file = req.POST['file']
         grid = req.POST['grid']
 
+        print "prev count of list = "+str(len(procedureList))
         newProcedure = createMosaic(file, int(grid))
         newProcedure.start()
         procedureList.append(newProcedure)
@@ -25,11 +26,14 @@ def mosaicPost(req):
         uid = newProcedure.getUid()
         print "new procedure! uid = ", uid
         res.write(uid)
+
+        print "after count of list = "+str(len(procedureList))
         return res
 
     elif 'uid' in req.POST:
         print "request progress"
         uid = req.POST['uid']
+        print "request uid = "+uid
         creating = findProcedure(uid)
         if creating==None:
             print "ERR! creating==None"
