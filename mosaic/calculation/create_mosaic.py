@@ -26,7 +26,6 @@ class createMosaic(Thread):
 
     def run(self):
         self.create()
-        pass
 
     def getUid(self):
         return self.uid
@@ -48,19 +47,21 @@ class createMosaic(Thread):
         pixel = img.load()
         print "pixel loaded success"
         width, height = img.size
-        blockW, blockH = width/grid, height/grid
+        blockW, blockH = int(round(width/float(grid))), int((height/float(grid)))
 
 
         # ===== cutting image =====
         self.state += 1
         self.content = 0
 
-        colorLayoutData = [None]*(grid*grid)
+        dataY = [None for i in range(pow(grid,2))]
+        dataCb = [None for i in range(pow(grid,2))]
+        dataCr = [None for i in range(pow(grid,2))]
         for i in xrange(grid*grid):
             w = (int)(i%grid)
             h = (int)(i/grid)
             # print w, h
-            colorLayoutData[i] = doColorLayout(pixel, blockW, blockH, blockW*w, blockH*h)
+            dataY[i], dataCb[i], dataCr[i] = doColorLayout(pixel, blockW, blockH, blockW*w, blockH*h)
             self.content = 100*i/(grid*grid)
 
 
@@ -68,8 +69,8 @@ class createMosaic(Thread):
         self.state += 1
         self.content = 0
 
-        colorDis = [-1]*(grid*grid)
-        tiles = [None]*(grid*grid)
+        colorDis = [-1 for i in range(pow(grid,2))]
+        tiles = [None for i in range(pow(grid,2))]
 
         filedata = [f for f in os.listdir(DATAPATH) if isData(f)]
         datacount = len(filedata)
@@ -78,21 +79,31 @@ class createMosaic(Thread):
             # print filename
 
             with open(DATAPATH + filename) as f:
+                print "comparing file "+filename
                 compareData = [item.split(' ') for item in f.read().splitlines()]
                 f.close()
-                compareYArr = [float(j[0]) for j in compareData]
-                compareCbArr = [float(j[1]) for j in compareData]
-                compareCrArr = [float(j[2]) for j in compareData]
+                compY = [float(j[0]) for j in compareData]
+                compCb = [float(j[1]) for j in compareData]
+                compCr = [float(j[2]) for j in compareData]
 
-                for j in xrange(len(colorLayoutData)):
-                    data = colorLayoutData[j]
-                    yArr = [item[0] for item in data]
-                    cbArr = [item[1] for item in data]
-                    crArr = [item[2] for item in data]
+                for j in xrange(grid*grid):
+                    imgY, imgCb, imgCr = dataY[j], dataCb[j], dataCr[j]
 
-                    distance = np.linalg.norm(np.array(yArr) - np.array(compareYArr))\
-                               + np.linalg.norm(np.array(cbArr) - np.array(compareCbArr))\
-                               + np.linalg.norm(np.array(crArr) - np.array(compareCrArr))
+                    disY, disCb, disCr = 0, 0, 0
+                    for k in xrange(64):
+                        compare = 1
+                        # if k==0:
+                        #     compare = 10
+                        # elif k==1:
+                        #     compare = 5
+                        # elif k==2:
+                        #     compare = 3
+                        disY += compare * pow(imgY[k]-compY[k], 2)
+                        disCb += compare * pow(imgCb[k]-compCb[k], 2)
+                        disCr += compare * pow(imgCr[k] - compCr[k], 2)
+
+                    distance = pow(disY, 0.5) + pow(disCb, 0.5) + pow(disCr, 0.5)
+
                     if distance < colorDis[j] or colorDis[j] == -1:
                         colorDis[j] = distance
                         tiles[j] = filename[:-3]
@@ -120,14 +131,21 @@ class createMosaic(Thread):
 
 
     def create(self):
-        # create_tiles.do()
         print "create new image"
-        img = Image.open(BytesIO(base64.b64decode(self.file))).convert('YCbCr')
+        img = Image.open(BytesIO(base64.b64decode(self.file)))
+        print "image loaded success"
+        self.load(img)
+
+    def createLocal(self):
+        print "create new image local"
+        img = Image.open(DATAPATH+"../"+self.file).convert('YCbCr')
         print "image loaded success"
         self.load(img)
 
 
 if __name__ == "__main__":
-    create_tiles.do()
+
+    newProcedure = createMosaic("../dataset/ukbench00000.jpg", 10)
+    newProcedure.createLocal()
     # img = Image.open(DATAPATH + "..\\test.png").convert('YCbCr')
     # load(img, 80)

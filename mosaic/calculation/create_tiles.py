@@ -3,7 +3,6 @@ import os
 from PIL import Image
 from utility import *
 
-
 def do():
     listdir = os.listdir(DATAPATH)
     imageList = [f for f in listdir if isImage(f)]
@@ -14,15 +13,15 @@ def do():
             createData(f)
 
 def createData(filename):
-    img = Image.open(DATAPATH + filename).convert('YCbCr')
+    img = Image.open(DATAPATH + filename)
     pixel = img.load()
     width, height = img.size
-    data = doColorLayout(pixel, width, height)
+    dataY, dataCb, dataCr = doColorLayout(pixel, width, height)
 
 
     text = open(DATAPATH + filename + ".dt", "w")
-    for item in data:
-        print>>text, ' '.join(str(e) for e in item)
+    for i in xrange(64):
+        print>>text, str(dataY[i])+' '+str(dataCb[i])+' '+str(dataCr[i])
     text.close()
 
 

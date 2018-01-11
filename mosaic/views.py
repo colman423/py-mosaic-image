@@ -59,6 +59,7 @@ def mosaicPost(req):
 
 
 def mosaicGet(req):
+    create_tiles.do()
     return render(req, 'templates/mosaic.html')
 
 
