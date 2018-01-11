@@ -7,6 +7,8 @@ import base64
 from threading import Thread
 import time
 
+
+procedureList = []
 class createMosaic(Thread):
     file = None
     grid = 10

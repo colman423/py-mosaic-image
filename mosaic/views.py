@@ -4,7 +4,6 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from calculation.create_mosaic import *
 
-procedureList = []
 def findProcedure(uid):
     print "finding..."
     for p in procedureList:
