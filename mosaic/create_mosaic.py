@@ -101,8 +101,9 @@ class createMosaic(Thread):
                     combine = list(map(lambda x: abs(x[0] - x[1]), zip(np.array(compareData), imgData[j])))
                     for y in xrange(360):
                         if combine[y] > 180:
-                            combine[y] = (360 - combine[y]) * 2
-                    for y in range(360, 460):
+                            combine[y] = (360 - combine[y])
+                        combine[y]* 2
+                    for y in range(360, 461):
                         combine[y] = combine[y] / 2
                     distance = np.linalg.norm(combine)
 
