@@ -75,7 +75,7 @@ class createMosaic(Thread):
             h = (int)(i/grid)
             # print w, h
             data = doColorHistogram(pixel, blockW, blockH, width*w/grid, height*h/grid)
-            imgData[i] = data
+            imgData[i] = np.array(data)
             self.content = 100*i/(grid*grid)
 
 
@@ -95,22 +95,17 @@ class createMosaic(Thread):
                 print "comparing file "+filename
                 compareData = [int(item) for item in f.read().splitlines()]
                 f.close()
-                # print len(np.array(compareData))
 
                 for j in xrange(grid*grid):
-                    # print len(imgData[j])
-                    # combine = [abs(item[0] - item[1]) for item in zip(np.array(compareData), imgData[j])]
-                    # print imgData[j]
-                    combine = map(lambda x: abs(x[0] - x[1]), zip(compareData, imgData[j]))
+
+                    combine = list(map(lambda x: abs(x[0] - x[1]), zip(np.array(compareData), imgData[j])))
                     for y in xrange(360):
                         if combine[y] > 180:
-                            combine[y] = (360 - combine[y]) * 2
-                        else:
-                            combine[y] *= 2
-                    for y in range(360, 460):
+                            combine[y] = (360 - combine[y])
+                        combine[y] =combine[y] * 2
+                    for y in range(360, 461):
                         combine[y] = combine[y] / 2
                     distance = np.linalg.norm(combine)
-                    print j, distance
 
                     if distance < colorDis[j] or colorDis[j] == -1:
                         colorDis[j] = distance
