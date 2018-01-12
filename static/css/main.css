@@ -4,6 +4,10 @@ body {
 em {
     color: LightSeaGreen;
 }
+#image-container {
+    margin-left: 20px!important;
+    margin-right: 20px!important;
+}
 img {
     background-color: white;
     content: "dgdfg";
@@ -13,10 +17,13 @@ img {
     border-style: dashed;
     border-radius: 25px;
     text-align: center;
+    display: table;
+    margin: 0 auto;
 }
 img[src] {
     width: auto;
-    max-height: 400px;
+    /* max-height: 400px; */
+    max-width: 100%;
 }
 .toggle {
     padding-left: 20px;
