@@ -102,7 +102,7 @@ class createMosaic(Thread):
                     for y in xrange(360):
                         if combine[y] > 180:
                             combine[y] = (360 - combine[y])
-                        combine[y]* 2
+                        combine[y] =combine[y] * 2
                     for y in range(360, 461):
                         combine[y] = combine[y] / 2
                     distance = np.linalg.norm(combine)
