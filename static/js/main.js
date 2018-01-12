@@ -1,19 +1,30 @@
 $(function() {
-    $('#prev').on('click', function() {
+    let prevImage = $('#prev');
+    let outputImage = $('#output');
+    prevImage.on('click', function() {
         $('#file').click();
     })
     $('#file').on('change', function() {
         if (this.files && this.files[0]) {
             $('#show').hide();
             $('#select').show();
+            outputImage.removeAttr('src');
             var FR = new FileReader();
             FR.addEventListener("load", function(e) {
                 let code = e.target.result;
-                $('#prev').attr('src', code);
+                prevImage.attr('src', code);
                 $('#base64').text(code);
+
             });
             FR.readAsDataURL( this.files[0] );
         }
+    });
+    prevImage.on('load', function() {
+        width = prevImage.css('width');
+        height = prevImage.css('height');
+        console.log(width+""+height);
+        outputImage.css('width', width).css('height', height);
+
     });
     $('#submit').on('click', function() {
         file = $('#base64').text();
@@ -28,10 +39,14 @@ $(function() {
 
             let imgData = file.substr(file.indexOf('base64,')+7);
             let grid = $('#grid').val();
+            grid = grid ? grid : 10;
+            let choose = $('#radio-color-histogram').prop('checked');
+            let method = choose ? "color histogram" : "color layout";
+            alert(method);
             $.ajax({
                 type: "POST",
                 url: "/",
-                data: { 'file': imgData, 'grid': grid ? grid : 10},
+                data: { 'file': imgData, 'grid': grid, method: method},
                 success: function(res) {
                     responseProgress(res);
                 },
@@ -56,7 +71,7 @@ $(function() {
                 let content = res['content']
                 if( res['state']==4 ) {
                     let url = '/output/'+content;
-                    $('#output').attr('src', url).prop('hidden', false);
+                    outputImage.attr('src', url).prop('hidden', false);
 
                     $('#progress-text').text("complete!");
                     $('#progress-bar').progressbar("value", 100);

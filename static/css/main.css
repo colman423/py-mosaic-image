@@ -5,12 +5,16 @@ em {
     color: LightSeaGreen;
 }
 #image-container {
-    margin-left: 20px!important;
-    margin-right: 20px!important;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+#select-container {
+    margin-top: 50px;
+    margin-bottom: 50px;
 }
 img {
     background-color: white;
-    content: "dgdfg";
     width: 100%;
     min-height: 300px;
     border: 2px solid black;
@@ -22,11 +26,10 @@ img {
 }
 img[src] {
     width: auto;
-    /* max-height: 400px; */
     max-width: 100%;
 }
-.toggle {
-    padding-left: 20px;
+.full-input {
+    width: 100%
 }
 #no-img-err {
     color: red;
@@ -35,5 +38,8 @@ img[src] {
     float: right!important;
 }
 #grid {
-    margin-right: 60px!important;
+    /* margin-right: 60px!important; */
+}
+.child-vcenter {
+    top: 10px;
 }

@@ -17,8 +17,9 @@ def mosaicPost(req):
         print "new file"
         file = req.POST['file']
         grid = req.POST['grid']
+        method = req.POST['method']
 
-        newProcedure = createMosaic(file, int(grid))
+        newProcedure = createMosaic(file, int(grid), method)
         newProcedure.start()
         procedureList.append(newProcedure)
 
